@@ -19,17 +19,33 @@ func NewCategoryService(categoryDB database.Category) *CategoryService {
 	}
 }
 
-func (c *CategoryService) CreateCategory(ctx context.Context, in *pb.CreateCategoryRequest) (*pb.CategoryResponse, error) {
+func (c *CategoryService) CreateCategory(ctx context.Context, in *pb.CreateCategoryRequest) (*pb.Category, error) {
 	category, err := c.CategoryDB.Create(in.Name, in.Description)
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "failed to create category: %v", err)
 	}
 
-	return &pb.CategoryResponse{
-		Category: &pb.Category{
+	return &pb.Category{
+		Id:          category.ID,
+		Name:        category.Name,
+		Description: category.Description,
+	}, nil
+}
+
+func (c *CategoryService) ListCategories(ctx context.Context, in *pb.Blank) (*pb.CategoryList, error) {
+	categories, err := c.CategoryDB.FindAll()
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "failed to list categories: %v", err)
+	}
+
+	var categoryList pb.CategoryList
+	for _, category := range categories {
+		categoryList.Categories = append(categoryList.Categories, &pb.Category{
 			Id:          category.ID,
 			Name:        category.Name,
 			Description: category.Description,
-		},
-	}, nil
+		})
+	}
+
+	return &categoryList, nil
 }
