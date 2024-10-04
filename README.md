@@ -152,3 +152,15 @@ pb.CategoryService@localhost:50051> call ListCategories
   ]
 }
 ```
+
+#### Call the methods: GetCategory
+
+```bash
+pb.CategoryService@localhost:50051> call GetCategory
+id (TYPE_STRING) => 2507ad6a-ae00-4bed-8f29-387ccb419011
+{
+  "description": "My second category",
+  "id": "2507ad6a-ae00-4bed-8f29-387ccb419011",
+  "name": "Marketing"
+}
+```
