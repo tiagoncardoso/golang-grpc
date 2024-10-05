@@ -164,3 +164,64 @@ id (TYPE_STRING) => 2507ad6a-ae00-4bed-8f29-387ccb419011
   "name": "Marketing"
 }
 ```
+
+#### Call the methods: CreateCategoryStream
+This call will create a stream of categories. To stop the stream, press `Ctrl + D`.
+
+```bash
+pb.CategoryService@localhost:50051> call CreateCategoryStream
+name (TYPE_STRING) => cat stream 1
+description (TYPE_STRING) => desc 1
+name (TYPE_STRING) => cat stream 2
+description (TYPE_STRING) => desc 2
+name (TYPE_STRING) => cat stream 3
+description (TYPE_STRING) => desc 3
+name (TYPE_STRING) => # Here I'm pressing Ctrl + D
+{
+  "categories": [
+    {
+      "description": "desc 1",
+      "id": "aae0417c-ffc3-4d80-bc07-496a7db6ce63",
+      "name": "cat stream 1"
+    },
+    {
+      "description": "desc 2",
+      "id": "425a6a98-9916-4fd2-a5f5-b63f4b14f389",
+      "name": "cat stream 2"
+    },
+    {
+      "description": "desc 3",
+      "id": "db910424-91a1-4b33-96f9-e2e3872e8a5c",
+      "name": "cat stream 3"
+    }
+  ]
+}
+```
+
+#### Call the methods: ListCategoriesStream
+This call will create a bidirectional stream of categories. To stop the stream, press `Ctrl + D`.
+
+```bash
+pb.CategoryService@localhost:50051> call CreateCategoryStreamBidirectional
+name (TYPE_STRING) => Cat 1 bidirectional
+description (TYPE_STRING) => desc 1
+name (TYPE_STRING) => {
+  "description": "desc 1",
+  "id": "6df28eca-c3a9-4cdc-8ba4-22c3b872f417",
+  "name": "Cat 1 bidirectional"
+}
+name (TYPE_STRING) => Cat 2 bidirectional
+description (TYPE_STRING) => desc 2
+name (TYPE_STRING) => {
+  "description": "desc 2",
+  "id": "69eed35b-0623-416b-a749-c695148b9007",
+  "name": "Cat 2 bidirectional"
+}
+name (TYPE_STRING) => 
+description (TYPE_STRING) => desc 3
+name (TYPE_STRING) => {
+  "description": "desc 3",
+  "id": "36b53ea3-0424-4f87-9d07-69466147df6d"
+}
+name (TYPE_STRING) => # Here I'm pressing Ctrl + D 
+```

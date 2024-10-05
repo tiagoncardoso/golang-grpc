@@ -6,6 +6,7 @@ import (
 	"github.com/tiagoncardoso/golang-grpc/internal/pb"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
+	"io"
 )
 
 type CategoryService struct {
@@ -61,4 +62,49 @@ func (c *CategoryService) GetCategory(ctx context.Context, in *pb.GetCategoryReq
 		Name:        category.Name,
 		Description: category.Description,
 	}, nil
+}
+
+func (c *CategoryService) CreateCategoryStream(stream pb.CategoryService_CreateCategoryStreamServer) error {
+	categories := &pb.CategoryList{}
+
+	for {
+		in, err := stream.Recv()
+		if err == io.EOF {
+			return stream.SendAndClose(categories)
+		}
+
+		category, err := c.CategoryDB.Create(in.Name, in.Description)
+		if err != nil {
+			return err
+		}
+
+		categories.Categories = append(categories.Categories, &pb.Category{
+			Id:          category.ID,
+			Name:        category.Name,
+			Description: category.Description,
+		})
+	}
+}
+
+func (c *CategoryService) CreateCategoryStreamBidirectional(stream pb.CategoryService_CreateCategoryStreamBidirectionalServer) error {
+	for {
+		in, err := stream.Recv()
+		if err == io.EOF {
+			return nil
+		}
+
+		category, err := c.CategoryDB.Create(in.Name, in.Description)
+		if err != nil {
+			return err
+		}
+
+		err = stream.Send(&pb.Category{
+			Id:          category.ID,
+			Name:        category.Name,
+			Description: category.Description,
+		})
+		if err != nil {
+			return err
+		}
+	}
 }
